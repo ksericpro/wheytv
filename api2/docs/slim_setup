@@ -1,0 +1,43 @@
+1. apt-get composer
+2. composer.json
+{
+  "require": {
+	"slim/slim": "^3.0"
+  }
+}
+
+3. composer install
+it wil create the vendor folder
+
+4. edit /etc/nginx/sites-available/fpm.conf
+location /api2/ {
+    try_file $uri/api2/index.php?$args;
+}
+
+5. service nginx restart
+
+6. create index.php
+
+require './vendor/autoload.php';
+
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+//echo "index.php";
+$app = new \Slim\App;
+
+//Add Middleware
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+
+//Add CORS to response
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+});  
+
+$app->run();
+   

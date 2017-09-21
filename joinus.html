@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>WheyTV - Join US</title>
+	
+	<!--favicon-->
+	<link rel="shortcut icon" href="img/favicon.png" type="image/png" />
+
+	<!--custom styles-->
+	<link href="css/custom.css" rel="stylesheet">
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- bootstrap styles -->
+    <link href="css/styles.css" media="screen" rel="stylesheet" type="text/css" >
+	
+
+
+    <!-- additional fonts -->
+    <!--<link href="css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" >-->
+
+    <!-- Modernizr -->
+    <script type="text/javascript" src="js/modernizr.custom.min.js"></script>
+
+    <script type="text/javascript">
+
+        //checking media queries browsers support
+        Modernizr.load({
+            test: Modernizr.mq('only all'),
+            nope: 'js/respond.min.js'
+        });
+
+    </script>
+	
+	<!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--login->-->
+	<link href="css/login.css" rel="stylesheet">
+	
+	<!-- jQuery -->
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+
+	<!-- bootstrap js -->
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+	<!-- scrollTo js -->
+	<script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
+
+	<!-- custom js -->
+	<script type="text/javascript" src="js/custom.js"></script>
+
+	<script>
+	<!--
+	var STATUS_LOGOUT = 0;
+	var STATUS_LOGIN = 1;
+	var FACEBOOK_SDK_KEY = "536950216510449";
+	var API_BASE_URL = "api2";
+	var POST_BACK_URLS = new Array();
+	POST_BACK_URLS['LOGIN'] = 'backend/action/login.php';
+	POST_BACK_URLS['USER_SESSION_UTILS'] = 'backend/action/user_session_utils.php';
+	POST_BACK_URLS['API_PING'] = API_BASE_URL+'/ping';
+	POST_BACK_URLS['USER_UPDATE_PROFILE'] = 'backend/action/save_profile.php';
+	POST_BACK_URLS['API_UPDATE_USER'] = API_BASE_URL + '/user/save';
+	
+	var POST_BACK_TASKS = new Array();
+	POST_BACK_TASKS['LOGIN_STATUS'] = 'LOGIN_STATUS';
+	POST_BACK_TASKS['LOGOUT_CLEARSESSION'] = 'LOGOUT_CLEARSESSION';
+	POST_BACK_TASKS['LOGIN_SETSESSION'] = 'LOGIN_SETSESSION';
+	POST_BACK_TASKS['USER_SAVE'] = 'USER_SAVE';
+	POST_BACK_TASKS['USER_UPDATE'] = 'USER_UPDATE';
+	
+	var CURRENT_LOGIN_STATUS = STATUS_LOGOUT;
+	var FIELDS = {
+		"displayname": "Display Name",
+		"firstname": "First Name",
+		"lastname" : "Last Name",
+		"newuseremail" : "Email",
+		"password1" : "Password"
+	}
+	
+	//Attach Handlers
+	function attachHandlers()
+	{
+		//Login Handler for Login Dialog
+		$( "#normal-sign-in" ).click(function() {
+		    console.log("Normal Sign In");
+			var useremail = $('#useremail'); // Get the username field
+			var password = $('#userpassword'); // Get the password field
+		
+			$.ajax({ // Send the credential values to another login.php using Ajax in POST menthod
+				type : 'POST',
+				data : $('#login-nav').serialize(),
+				url  : POST_BACK_URLS['LOGIN'],
+				success: function(responseText){ 
+					obj = JSON.parse(responseText);
+					if(obj.result == 1){
+					    console.log("Login Success for "+obj.firstname +" " +obj.lastname);
+						$("#username").html(obj.firstname +" " +obj.lastname);
+						updateMenuState(STATUS_LOGIN);
+						//checkLoginStatus();
+						
+						$("#login_status").html("Login Success for "+obj.firstname +" " +obj.lastname);
+					}
+					else {
+					    console.log("Login Fail for "+useremail.val());
+						$("#login_status").html("Login Fail for "+useremail.val());
+					}
+				}
+			});        						
+			
+		});
+		
+		//Handler to check on file type to upload
+		$( "#user_profile_image" ).change(function(){
+			if (!this.value) return;
+			var ext = this.value.match(/\.([^\.]+)$/)[1];
+			switch(ext)
+			{
+				case 'jpg':
+				case 'gif':
+				case 'png':
+					$("#profile-image-validation-message").html("");
+					break;
+				default:
+					$("#profile-image-validation-message").html("File with "+ext + " not allow.");
+					this.value='';
+			}
+		});
+		
+		//Save/Update new User Profile
+		$( "#confirm-btn" ).click(function() {
+		 
+			//validation
+		    $("#validation-message").html("");
+			for (var key in FIELDS) {
+				if (FIELDS.hasOwnProperty(key))
+				{
+					var val = FIELDS[key];
+					if(!document.getElementById(key).checkValidity())
+					{
+						var error = document.getElementById(key).validationMessage;
+						$("#validation-message").html(error+" (" +val +")");
+						document.getElementById(key).focus();
+						//break;
+						return;
+					}
+				}
+			}
+			
+			//Compare password
+			if($("#password1").val() != $("#password2").val())
+			{
+				$("#validation-message").html("Passwords do not match");
+				$("#password2").focus();
+				return;
+			} 
+			
+			console.log("Validation Check Success. Posting to backend");
+			
+			//Posting to backend	
+			var form_data = new FormData();	
+			//Normal Fields
+			for (var key in FIELDS) {
+				if (FIELDS.hasOwnProperty(key))
+				{
+					form_data.append(key, $("#"+key).val());
+				}
+			}
+			
+			//Get profile Picture
+			var files = $("#user_profile_image").get(0).files;
+			if (files.length > 0) 
+			{  		 
+				console.log("Attaching ", files[0]);                
+				form_data.append("file", files[0]);										
+			}
+			
+			//Post 
+			$.ajax({
+				url: POST_BACK_URLS['USER_UPDATE_PROFILE'],
+				dataType: 'text',
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,                         
+				type: 'post',
+				success: function(php_script_response){
+					console.log("Response="+php_script_response);
+					obj = $.parseJSON(php_script_response);
+					console.log( obj.result, obj.filename);
+					insertUser($("#displayname").val(), $("#firstname").val(), 
+						$("#lastname").val(), $("#newuseremail").val(), 
+						$("#password1").val(), $("#guildname").val(), 
+						obj.filename, 
+						false);
+				},
+				error: function (xhr, status, error) {
+					console.log(xhr);
+					console.log(status);
+					console.log(error);
+					console.log(data);
+				}
+			});
+			//alert("Success");
+		});
+		
+		//Enter Key
+		$(document).keypress(function(e){
+			if (e.which == 13){
+				console.log("Enter Key Pressed");
+				$("#confirm-btn").click();		
+			}
+		});
+	}
+	
+	//Ping the API Server
+	function pingAPIServer()
+	{
+		$.getJSON(POST_BACK_URLS['API_PING'], function(data) {
+			console.log("Ping Server::"+JSON.stringify(data));
+		});
+	}
+	
+	//Check Login status
+	function checkLoginStatus()
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGIN_STATUS']
+		});
+		$.ajax({
+			url: POST_BACK_URLS['USER_SESSION_UTILS'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: {mydata:jdata},
+			async: false,
+			success: function(s){
+				console.log("Check Login Status::"+JSON.stringify(s));
+			   // console.log(s.result);
+				if(s.result=="1")
+				{
+				    var firstname = s.firstname;
+					var lastname = s.lastname;
+					var displayname = s.displayname;
+					console.log("Previously logged In as "+ firstname + ", " + lastname + ", " + displayname);
+					$("#username").html(displayname);
+					updateMenuState(STATUS_LOGIN);
+				}
+				else
+				{
+					console.log("Previously not logged in");
+					updateMenuState(STATUS_LOGOUT);
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+	}
+	
+	//Log out Clear Session
+	function clearSession()
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGOUT_CLEARSESSION']
+		});
+		$.ajax({
+			url: POST_BACK_URLS['USER_SESSION_UTILS'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: {mydata:jdata},
+			async: false,
+			success: function(s){
+				console.log("clearSession::"+JSON.stringify(s));					
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+	}
+	
+	//Log In Set Session
+	function setSession(name, email)
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGIN_SETSESSION'],
+			"firstname":name,
+			"lastname":"",
+			"displayname":email
+		});
+		
+		//console.log(jdata);
+		
+		$.ajax({
+			url: POST_BACK_URLS['USER_SESSION_UTILS'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: {mydata:jdata},
+			async: false,
+			success: function(s){
+				console.log("setSession::"+JSON.stringify(s));					
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+	}
+	
+	//save user
+	function insertUser(displayname, firstname, lastname, email, password, guildname, profile_img, facebook_login)
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['USER_SAVE'],
+			"firstname":firstname,
+			"lastname":lastname,
+			"displayname":displayname,
+			"email":email,
+			"password":password,
+			"guidname":guildname,
+			"profile_image":profile_img,
+			"facebook_login":facebook_login
+		});
+	    console.log("inserting ", displayname, firstname, lastname, email);
+		$.ajax({
+			url: POST_BACK_URLS['API_UPDATE_USER'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: jdata,
+			async: false,
+			success: function(s){
+				console.log("insertUser::"+JSON.stringify(s));					
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+		
+	}
+	
+	//Ready
+	$(function() {
+		attachHandlers();
+		checkLoginStatus();
+		//pingAPIServer();
+	});
+	
+			
+	// This is called with the results from from FB.getLoginStatus().
+	function statusChangeCallback(response) {
+		console.log('statusChangeCallback::'+response.status);
+		console.log("Current Login Status="+CURRENT_LOGIN_STATUS);
+		if (CURRENT_LOGIN_STATUS==STATUS_LOGIN)
+		{
+			console.log("Already Logged In using Non FB");
+			return;
+		}
+		//console.log(response);
+		// The response object is returned with a status field that lets the
+		// app know the current login status of the person.
+		// Full docs on the response object can be found in the documentation
+		// for FB.getLoginStatus().
+		if (response.status === 'connected') {
+			// Logged into your app and Facebook.
+			var uid = response.authResponse.userID;
+			var accessToken = response.authResponse.accessToken;
+	
+			console.log('uid='+uid+', accesstoken='+accessToken);
+			//getCurrentUserInfo(response);
+			getCurrentUserInfo();
+			updateMenuState(STATUS_LOGIN);
+			
+			
+			
+		} else if (response.status === 'not_authorized') {
+			// The person is logged into Facebook, but not your app.
+			document.getElementById('status').innerHTML = 'Please log ' +
+			'into this app.';
+		} else {
+			// The person is not logged into Facebook, so we're not sure if
+			// they are logged into this app or not.
+			document.getElementById('status').innerHTML = 'Please log ' +
+			'into Facebook.';
+			
+			//updateMenuState(STATUS_LOGOUT);
+		}
+	}
+	
+	// This function is called when someone finishes with the Login
+	// Button.  See the onlogin handler attached to it in the sample
+	// code below.
+	function checkLoginState() {
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+	}
+	
+	//Get Current User Info
+	function getCurrentUserInfo() {
+		//console.log('Welcome!  Fetching your information.... ');
+		FB.api('/me?fields=id,name,email,permissions', function(response) {
+			console.log('Successful login for: ' + response.name + ', '+response.email);
+	  
+			document.getElementById('status').innerHTML =
+				'Logged in as ' + response.name;
+				
+			$("#username").html(response.name);
+			
+			setSession(response.name, response.email);
+			
+			//Check DB and insert if doesn't exist
+			//console.log("insert into database "+response.name +", "+response.email);
+			insertUser(response.name, response.name, "", response.email, "", "", "", true);
+		});
+		
+		
+	}
+	
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId      : FACEBOOK_SDK_KEY,
+			cookie     : true,  // enable cookies to allow the server to access 
+								// the session
+			xfbml      : true,  // parse social plugins on this page
+			version    : 'v2.8' // use graph api version 2.8
+		});
+
+		// Now that we've initialized the JavaScript SDK, we call 
+		// FB.getLoginStatus().  This function gets the state of the
+		// person visiting this page and can return one of three states to
+		// the callback you provide.  They can be:
+		//
+		// 1. Logged into your app ('connected')
+		// 2. Logged into Facebook, but not your app ('not_authorized')
+		// 3. Not logged into Facebook and can't tell if they are logged into
+		//    your app or not.
+		//
+		// These three cases are handled in the callback function.
+
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+
+	};
+	
+	//Log out
+	function logout() {
+        FB.logout(function(response) {
+            // user is now logged out
+			console.log("user logout");
+			//
+         });
+		clearSession();
+		updateMenuState(STATUS_LOGOUT);
+    }
+	
+	//Update Menu if User is logged in/out
+	function updateMenuState(status)
+	{
+	   //console.log("status "+status);
+	   if (status==STATUS_LOGIN)
+	   {
+			//log in
+			$("#usermenu").show();
+			CURRENT_LOGIN_STATUS = STATUS_LOGIN;
+	   }
+	   else 
+	   {
+			//log out
+			$("#usermenu").hide();
+			$("#username").html("");
+			CURRENT_LOGIN_STATUS = STATUS_LOGOUT;
+	   }
+	}
+	
+	 // Load the SDK asynchronously
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+	
+	-->
+	</script>
+	
+
+</head>
+
+<body style="background-color:#ffffff;font-family:arial;"> <!-- Black is #ff000000, white is #ffffff-->
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+	
+		<!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle minimenu_button" data-toggle="collapse" data-target="#main-menu">
+				<span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+             </button>
+            <a href="index.html">
+				<img border="5" style="border-color:black" src="img/jimmy/WHEYTV logo white-small.png" title="Go to Home page"/>
+			</a>
+			
+        </div>
+		<div id="login-content">
+			<span class="label label-primary loginbadge" id="username">ksericpro</span>
+		</div>
+		<div class="collapse navbar-collapse" id="main-menu">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="index.html">Home</a>
+				</li>
+				<li>
+					<a href="partnerus.html">Partner US</a>
+				</li>
+				<li class="pull-right" id="usermenu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-bottom:2pt;"><i class="fa fa-list"></i><b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="WHEYTV%20Profile.html">Profile Settings</a>
+						</li>
+						<li>
+							<a href="Profile%20Stream%20Now.html">Stream Now</a>
+						</li>
+						<li>
+							<a href="article-item.html">Top Up Wings</a>
+						</li>
+						<li>
+							<a href="javascript:logout()">Log out</a>
+						</li>
+					</ul>
+				</li>
+				
+				<li class="dropdown" id="loginmenu">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+						<ul id="login-dp" class="dropdown-menu">
+						<li>
+							<div class="row">
+								<div class="col-md-12" style="background-color:white">
+								Login via
+								<div class="social-buttons">
+							
+									<fb:login-button scope="public_profile,email" autologoutlink="true" onlogin="checkLoginState();">
+									</fb:login-button>
+
+									<div id="status" style="color:#000000;font-weight:bold;"></div>
+					
+								</div>
+                                or
+								 <form class="form" role="form" method="post" action="login" accept-charset="UTF-8" id="login-nav" onsubmit="event.preventDefault();">
+										<div class="form-group">
+											 <label class="sr-only" for="useremail">Email address</label>
+											 <input type="email" class="form-control" name="useremail" id="useremail" placeholder="Email address" required>
+										</div>
+										<div class="form-group">
+											 <label class="sr-only" for="userpassword">Password</label>
+											 <input type="password" class="form-control" name="userpassword" id="userpassword" placeholder="Password" required>
+                                             <label id="login_status" style="color:blue;font-size:8pt;"></label>
+											 <div class="help-block text-right"><a href="forgetpassword.html">Forget the password ?</a></div>
+										</div>
+										<div class="form-group">
+											 <button type="submit" class="btn btn-primary btn-block" id="normal-sign-in">Sign in</button>
+										</div>
+										<div class="checkbox">
+											 <label>
+											 <input type="checkbox"> keep me logged-in
+											 </label>
+										</div>
+								 </form>
+							</div>
+							<div class="bottom text-center">
+								New here ? <a href="joinus.html"><b>Join Us</b></a>
+							</div>
+							</div>
+							</li>
+						</ul>
+					</li>
+				
+				
+			</ul>
+				
+		</div>
+		
+    </div>
+
+</div>
+
+
+<div class="container div_after_header">
+
+    <div class="col-sm-2">
+	</div>
+	
+    <div class="col-sm-8">
+
+
+		<h3>Join Us - Profile Settings</h3>
+		
+	<!--	<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#home">Profile Settings</a></li>
+			<li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+			<li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+		</ul>
+		
+		<div class="tab-content">
+  <div id="home" class="tab-pane fade in active">
+    <h3>HOME</h3>
+    <p>Some content.</p>
+  </div>
+  <div id="menu1" class="tab-pane fade">
+    <h3>Menu 1</h3>
+    <p>Some content in menu 1.</p>
+  </div>
+  <div id="menu2" class="tab-pane fade">
+    <h3>Menu 2</h3>
+    <p>Some content in menu 2.</p>
+  </div>
+</div>-->
+		
+		 <!--<h1 class="header-box">Profile Settings</h1>-->
+			<!--<p>Update your profile pic, password or </p>-->
+
+            <form class="form-horizontal" role="form">
+				<span id="validation-message" style="color:red;"></span>
+				<div class="form-group has-feedback">
+                    <label for="displayname" class="col-sm-3 control-label">Display Name *</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="displayname" placeholder="Display Name" required>
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="guildname" class="col-sm-3 control-label">Guild Name</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="guildname" placeholder="Guild Name">
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label for="firstname" class="col-sm-3 control-label">First Name/Family Name *</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="firstname" placeholder="First Name" required>
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    </div>
+                </div>
+				
+				<div class="form-group has-feedback">
+                    <label for="lastname" class="col-sm-3 control-label">Last Name *</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="lastname" placeholder="Last Name" required>
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    </div>
+                </div>  
+				
+                <div class="form-group has-feedback">
+                    <label for="newuseremail" class="col-sm-3 control-label">Email *</label>
+                    <div class="col-sm-6">
+                        <input type="email" class="form-control" id="newuseremail" placeholder="Email" required>
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    </div>
+					<!--<input type="number" size="6" name="age" min="18" max="99" value="21">-->
+					<!--Satisfaction: <input type="range" size="2" name="satisfaction" min="1" max="5" value="3">-->
+                </div>
+				
+                <div class="form-group has-feedback">
+                    <label for="password1" class="col-sm-3 control-label">Password *</label>
+                    <div class="col-sm-6">
+                        <input type="password" class="form-control" id="password1" placeholder="Password" required pattern=".{3,}">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+						Minimum length 3
+                    </div>
+                </div>
+				
+                <div class="form-group has-feedback">
+                    <label for="password2" class="col-sm-3 control-label">Repeat password</label>
+                    <div class="col-sm-6">
+                        <input type="password" class="form-control" id="password2" placeholder="Repeat password">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+                </div>
+				<div class="Upload">
+                    <label for="user_profile_image" class="col-sm-3 control-label">Profile Pic</label>
+                    <div class="col-sm-6">
+						<div class= "profile_image img_file">
+							<img class="p70 img_file" src="img/jimmy/super star badge.jpg"  width="25%" height="25%"/>
+							<!--<input type="password" class="form-control" id="inputPassword4" placeholder="Repeat password">-->
+		 
+						</div>
+						<div class="input file optional user_profile_image">
+							<input class="file optional" id="user_profile_image" name="user_profile_image" type="file" accept="image/gif, image/jpeg, image/png" >
+							<p class = "form_microcopy"> Max 2mb gif, jpg or png. </p> 						
+							<span id="profile-image-validation-message" style="color:red;"></span>
+					
+						</div>
+					</div>
+					
+                </div>
+                <!--<div class="form-group">
+                    <label for="description" class="col-sm-3 control-label">Description</label>
+                    <div class="col-sm-6">
+                        <textarea class="form-control" id="description" placeholder="Type your description..."></textarea>
+                    </div>
+                </div>-->
+               <!-- <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> Do not use any image
+							
+							</label>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        <button type="button" id="confirm-btn" class="btn btn-lg btn-success">Confirm</button>
+                    </div>
+                </div>
+            </form>
+			
+	</div>
+	
+	<div class="col-sm-2">
+	</div>
+	
+</div>
+
+<footer>
+
+    <div class="container">
+
+        <ul>
+			<li>
+                <a href="index.html">
+                    <span>Home</span>
+                </a>
+            </li>
+			<li>
+                <a href="about-us.html">
+                    <span>About us</span> <!--not yet-->
+                </a>
+            </li>
+			<li>
+                <a href="partner-us.html">
+                    <span>Partner US</span> <!--not yet-->
+                </a>
+            </li>
+			<li>
+                <a href="faq.html">
+                    <span>FAQ</span>  <!--not yet-->
+                </a>
+            </li>
+			<li>
+                <a href="privacy-policy.html">
+                    <span>Privacy Policy</span> <!--not yet-->
+                </a>
+            </li>
+            <li>
+                <a href="contact-us.html">
+                    <span>Contact US</span> <!--not yet-->
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#help-modal"> <!--not yet-->
+                    <span>Help</span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</footer>
+
+
+
+</body>
+</html>

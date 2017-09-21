@@ -1,0 +1,19 @@
+1. sudo apt-get install php5.6-redis
+2. php -r "phpinfo"
+   look for the path of php.ini
+   
+3. nano /etc/php/5.6/fpm/php.ini
+   nano /etc/php/5.6/cli/php.ini
+
+   session.save_handler = redis
+   session.save_path = "tcp://127.0.0.1:6379"
+   
+4. service php5.6-fpm restart
+5. look for session in phpinfo. it should reflect save_handler and save_path
+6. run session script from browser
+7. redis-cli
+   >flushall
+   >keys *  
+   >get <keyname>
+   >del <keyname>   
+   

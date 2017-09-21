@@ -1,0 +1,9 @@
+Music-nation - Responsive Dark Template
+
+## version 1.1:
+
+*Menu in mobile fixed
+*Added icons in users box
+*Added icon in featured box
+*Removed border from images in text
+*Added description for images

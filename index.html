@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>WheyTV - Home</title>
+	
+	<!--favicon-->
+	<link rel="shortcut icon" href="img/favicon.png" type="image/png" />
+
+	<!--custom styles-->
+	<link href="css/custom.css" rel="stylesheet">
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- bootstrap styles -->
+    <link href="css/styles.css" media="screen" rel="stylesheet" type="text/css" >
+	
+
+
+    <!-- additional fonts -->
+    <!--<link href="css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" >-->
+
+    <!-- Modernizr -->
+    <script type="text/javascript" src="js/modernizr.custom.min.js"></script>
+
+    <script type="text/javascript">
+
+        //checking media queries browsers support
+        Modernizr.load({
+            test: Modernizr.mq('only all'),
+            nope: 'js/respond.min.js'
+        });
+
+    </script>
+	
+	<!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--login->-->
+	<link href="css/login.css" rel="stylesheet">
+	
+	<!-- jQuery -->
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+
+	<!-- bootstrap js -->
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+	<!-- scrollTo js -->
+	<script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
+
+	<!-- custom js -->
+	<script type="text/javascript" src="js/custom.js"></script>
+
+	<script>
+	<!--
+	var STATUS_LOGOUT = 0;
+	var STATUS_LOGIN = 1;
+	var FACEBOOK_SDK_KEY = "536950216510449";
+	var POST_BACK_URLS = new Array();
+	POST_BACK_URLS['LOGIN'] = 'backend/action/login.php';
+	POST_BACK_URLS['USER_SESSION_UTILS'] = 'backend/action/user_session_utils.php';
+	POST_BACK_URLS['PING'] = 'api2/ping';
+	POST_BACK_URLS['USER_UPDATE_PROFILE'] = '/wheytv/backend/action/save_profile.php';
+	
+	var POST_BACK_TASKS = new Array();
+	POST_BACK_TASKS['LOGIN_STATUS'] = 'LOGIN_STATUS';
+	POST_BACK_TASKS['LOGOUT_CLEARSESSION'] = 'LOGOUT_CLEARSESSION';
+	POST_BACK_TASKS['LOGIN_SETSESSION'] = 'LOGIN_SETSESSION';
+	
+	var CURRENT_LOGIN_STATUS = STATUS_LOGOUT;
+	
+	//Attach Handlers
+	function attachHandlers()
+	{
+		$( "#normal-sign-in" ).click(function() {
+			var useremail = $('#useremail'); // Get the username field
+			var password = $('#userpassword'); // Get the password field
+		
+			$.ajax({ // Send the credential values to another login.php using Ajax in POST menthod
+				type : 'POST',
+				data : $('#login-nav').serialize(),
+				url  : POST_BACK_URLS['LOGIN'],
+				success: function(responseText){ 
+					obj = JSON.parse(responseText);
+					if(obj.result == 1){
+					    console.log("Login Success for "+obj.firstname +" " +obj.lastname);
+						$("#username").html(obj.firstname +" " +obj.lastname);
+						updateMenuState(STATUS_LOGIN);
+						//checkLoginStatus();
+						
+						$("#login_status").html("Login Success for "+obj.firstname +" " +obj.lastname);
+					}
+					else {
+					    console.log("Login Fail for "+useremail.val());
+						$("#login_status").html("Login Fail for "+useremail.val());
+					}
+				}
+			});        						
+			
+		});
+	}
+	
+	//Ping the API Server
+	function pingAPIServer()
+	{
+		$.getJSON(POST_BACK_URLS['PING'], function(data) {
+			console.log("Ping Server::"+JSON.stringify(data));
+		});
+	}
+	
+	//Check Login status
+	function checkLoginStatus()
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGIN_STATUS']
+		});
+		$.ajax({
+			url: POST_BACK_URLS['USER_SESSION_UTILS'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: {mydata:jdata},
+			async: false,
+			success: function(s){
+				console.log("Check Login Status::"+JSON.stringify(s));
+			   // console.log(s.result);
+				if(s.result=="1")
+				{
+				    var firstname = s.firstname;
+					var lastname = s.lastname;
+					var displayname = s.displayname;
+					console.log("Previously logged In as "+ firstname + ", " + lastname + ", " + displayname);
+					$("#username").html(displayname);
+					updateMenuState(STATUS_LOGIN);
+				}
+				else
+				{
+					console.log("Previously not logged in");
+					updateMenuState(STATUS_LOGOUT);
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+	}
+	
+	//Log out Clear Session
+	function clearSession()
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGOUT_CLEARSESSION']
+		});
+		$.ajax({
+			url: POST_BACK_URLS['USER_SESSION_UTILS'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: {mydata:jdata},
+			async: false,
+			success: function(s){
+				console.log("clearSession::"+JSON.stringify(s));					
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+	}
+	
+	//Log In Set Session
+	function setSession(name, email)
+	{
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGIN_SETSESSION'],
+			"firstname":name,
+			"lastname":"",
+			"displayname":email
+		});
+		
+		//console.log(jdata);
+		
+		$.ajax({
+			url: POST_BACK_URLS['USER_SESSION_UTILS'],
+			type: 'POST', // Send post data
+			dataType: "json",
+			data: {mydata:jdata},
+			async: false,
+			success: function(s){
+				console.log("setSession::"+JSON.stringify(s));					
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+			}
+		});
+	}
+	
+	//Check Login status
+	/*function checkLoginStatus2()
+	{
+	   // console.log("check login status");
+		var jdata = JSON.stringify({
+			"task": POST_BACK_TASKS['LOGIN_STATUS']
+		});
+		
+		var data = new FormData();
+		data.append( "mydata", jdata );
+		
+		fetch(POST_BACK_URLS['CHECK_LOGIN_STATUS'], {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: data
+				
+		}).then(function(response) {
+		    //console.log(response.json());
+			if (!response.ok) {
+				throw Error(response.status+"::"+response.statusText);
+			}				
+			return response.json();	
+		}).then(function(j) {
+		    console.log("Check Login Status2::"+JSON.stringify(j));			
+		}).catch(function(err) {
+			console.log("Check Login Status2::"+err);
+		});
+	}*/
+	
+	//Ready
+	$(function() {
+		attachHandlers();
+		checkLoginStatus();
+		//pingAPIServer();
+	});
+			
+	// This is called with the results from from FB.getLoginStatus().
+	function statusChangeCallback(response) {
+		console.log('statusChangeCallback::'+response.status);
+		console.log("Current Login Status="+CURRENT_LOGIN_STATUS);
+		if (CURRENT_LOGIN_STATUS==STATUS_LOGIN)
+		{
+			console.log("Already Logged In using Non FB");
+			return;
+		}
+		//console.log(response);
+		// The response object is returned with a status field that lets the
+		// app know the current login status of the person.
+		// Full docs on the response object can be found in the documentation
+		// for FB.getLoginStatus().
+		if (response.status === 'connected') {
+			// Logged into your app and Facebook.
+			var uid = response.authResponse.userID;
+			var accessToken = response.authResponse.accessToken;
+	
+			console.log('uid='+uid+', accesstoken='+accessToken);
+			//getCurrentUserInfo(response);
+			getCurrentUserInfo();
+			updateMenuState(STATUS_LOGIN);
+			
+			
+			
+		} else if (response.status === 'not_authorized') {
+			// The person is logged into Facebook, but not your app.
+			document.getElementById('status').innerHTML = 'Please log ' +
+			'into this app.';
+		} else {
+			// The person is not logged into Facebook, so we're not sure if
+			// they are logged into this app or not.
+			document.getElementById('status').innerHTML = 'Please log ' +
+			'into Facebook.';
+			
+			//updateMenuState(STATUS_LOGOUT);
+		}
+	}
+	
+	// This function is called when someone finishes with the Login
+	// Button.  See the onlogin handler attached to it in the sample
+	// code below.
+	function checkLoginState() {
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+	}
+	
+	//Get Current User Info
+	function getCurrentUserInfo() {
+		//console.log('Welcome!  Fetching your information.... ');
+		FB.api('/me?fields=id,name,email,permissions', function(response) {
+			console.log('Successful login for: ' + response.name + ', '+response.email);
+	  
+			document.getElementById('status').innerHTML =
+				'Logged in as ' + response.name;
+				
+			$("#username").html(response.name);
+			
+			setSession(response.name, response.email);
+			
+			//Check DB and insert if doesn't exist
+			console.log("insert into database "+response.name +", "+response.email);
+			
+		});
+		
+		
+	}
+	
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId      : FACEBOOK_SDK_KEY,
+			cookie     : true,  // enable cookies to allow the server to access 
+								// the session
+			xfbml      : true,  // parse social plugins on this page
+			version    : 'v2.8' // use graph api version 2.8
+		});
+
+		// Now that we've initialized the JavaScript SDK, we call 
+		// FB.getLoginStatus().  This function gets the state of the
+		// person visiting this page and can return one of three states to
+		// the callback you provide.  They can be:
+		//
+		// 1. Logged into your app ('connected')
+		// 2. Logged into Facebook, but not your app ('not_authorized')
+		// 3. Not logged into Facebook and can't tell if they are logged into
+		//    your app or not.
+		//
+		// These three cases are handled in the callback function.
+
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+
+	};
+	
+	//Log out
+	function logout() {
+        FB.logout(function(response) {
+            // user is now logged out
+			console.log("user logout");
+			//
+         });
+		clearSession();
+		updateMenuState(STATUS_LOGOUT);
+    }
+	
+	//Update Menu if User is logged in/out
+	function updateMenuState(status)
+	{
+	   //console.log("status "+status);
+	   if (status==STATUS_LOGIN)
+	   {
+			//log in
+			$("#usermenu").show();
+			CURRENT_LOGIN_STATUS = STATUS_LOGIN;
+	   }
+	   else 
+	   {
+			//log out
+			$("#usermenu").hide();
+			$("#username").html("");
+			CURRENT_LOGIN_STATUS = STATUS_LOGOUT;
+	   }
+	}
+	
+	 // Load the SDK asynchronously
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+	
+	-->
+	</script>
+	
+
+</head>
+
+<body style="background-color:#ffffff;font-family:arial;"> <!-- Black is #ff000000, white is #ffffff-->
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+	
+		<!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle minimenu_button" data-toggle="collapse" data-target="#main-menu">
+				<span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+             </button>
+            <a href="index.html">
+				<img border="5" style="border-color:black" src="img/jimmy/WHEYTV logo white-small.png" title="Go to Home page"/>
+			</a>
+			
+        </div>
+		<div id="login-content">
+			<span class="label label-primary loginbadge" id="username">ksericpro</span>
+		</div>
+		<div class="collapse navbar-collapse" id="main-menu">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="index.html">Home</a>
+				</li>
+				<li>
+					<a href="partnerus.html">Partner US</a>
+				</li>
+				<li class="pull-right" id="usermenu">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-bottom:2pt;"><i class="fa fa-list"></i><b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="WHEYTV%20Profile.html">Profile Settings</a>
+						</li>
+						<li>
+							<a href="Profile%20Stream%20Now.html">Stream Now</a>
+						</li>
+						<li>
+							<a href="article-item.html">Top Up Wings</a>
+						</li>
+						<li>
+							<a href="javascript:logout()">Log out</a>
+						</li>
+					</ul>
+				</li>
+				
+				<li class="dropdown" id="loginmenu">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+						<ul id="login-dp" class="dropdown-menu">
+						<li>
+							<div class="row">
+								<div class="col-md-12" style="background-color:white">
+								Login via
+								<div class="social-buttons">
+							
+									<fb:login-button scope="public_profile,email" autologoutlink="true" onlogin="checkLoginState();">
+									</fb:login-button>
+
+									<div id="status" style="color:#000000;font-weight:bold;"></div>
+					
+								</div>
+                                or
+								 <form class="form" role="form" method="post" action="login" accept-charset="UTF-8" id="login-nav">
+										<div class="form-group">
+											 <label class="sr-only" for="useremail">Email address</label>
+											 <input type="email" class="form-control" name="useremail" id="useremail" placeholder="Email address" required>
+										</div>
+										<div class="form-group">
+											 <label class="sr-only" for="userpassword">Password</label>
+											 <input type="password" class="form-control" name="userpassword" id="userpassword" placeholder="Password" required>
+                                             <label id="login_status" style="color:blue;font-size:8pt;"></label>
+											 <div class="help-block text-right"><a href="forgetpassword.html">Forget the password ?</a></div>
+										</div>
+										<div class="form-group">
+											 <button type="button" class="btn btn-primary btn-block" id="normal-sign-in">Sign in</button>
+										</div>
+										<div class="checkbox">
+											 <label>
+											 <input type="checkbox"> keep me logged-in
+											 </label>
+										</div>
+								 </form>
+							</div>
+							<div class="bottom text-center">
+								New here ? <a href="joinus.html"><b>Join Us</b></a>
+							</div>
+							</div>
+							</li>
+						</ul>
+					</li>
+				
+				
+			</ul>
+				
+		</div>
+		
+    </div>
+
+</div>
+
+
+<div class="div_after_header"> 
+
+	<center><img src="img/jimmy/banner_728x90.gif"/></center> <!--style= "margin-bottom:10pt"-->
+</div>
+
+<div 
+id="carousel-main" class="carousel slide" data-ride="carousel" style="margin-top:10pt;"><!-- change the coursell, height:350pt;-->
+
+
+  <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#carousel-main" data-slide-to="0" class="active"></li>
+        <li data-target="#carousel-main" data-slide-to="1"></li>
+        <li data-target="#carousel-main" data-slide-to="2"></li>
+    </ol>
+
+  <!-- Wrapper for slides -->
+    <div class="carousel-inner"; "margin-top:30pt">
+        <div class="item active">
+            <center><img src="img/jimmy/Homepage-video-size.gif" alt="slide-1"> <!--change image--></center>
+            <div class="carousel-caption">
+                
+                <p>Live Now..</p>
+            </div>
+        </div>
+        <div class="item">
+            <center><img src="img/jimmy/Homepage-video-size.gif" alt="slide-2"> <!--change image--></center>
+            <div class="carousel-caption">
+                
+                <p>Live /n/ow 2</p>
+            </div>
+        </div>
+        <div class="item">
+            <center><img src="img/jimmy/Homepage-video-size.gif" alt="slide-3"> <!--change image--></center>
+            <!--<div class="carousel-caption">
+                <p>Live Now.</p>
+            </div>-->
+        </div>
+    </div>
+
+  <!-- Controls -->
+    <a class="left carousel-control" href="#carousel-main" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="right carousel-control" href="#carousel-main" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+</div>
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-6 col-md-5">
+
+            <div class="standard-box">
+
+                <h2 class="header-box">Featured Tournaments</h2>
+
+                <div class="recommended-box">
+
+                    <div class="featured">
+                        <span class="glyphicon glyphicon-star"></span>
+                    </div>
+
+                    <a href="article-item.html" title="WHEY - Ad Test">
+                        <img class="img-responsive full-width" src="img/jimmy/350-dp-image.gif" alt="Boston" />
+                    </a>
+
+                    <div class="description">
+
+                        <h3>
+                            <a href="article-item.html">Boston - LiveStream 1</a>
+                        </h3>
+                        <p>New Boston Dota 2 Tournaments to be broadcast via Wheytv! Stay tune for more news release on 9 April 2017. The Band says that...<a href="article-item.html" title="more">&raquo;</a></p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-6 col-md-5">
+
+            <div class="standard-box">
+
+                <h2 class="header-box"><a href="articles-list.html">Hottest Livestreams</a></h2>
+
+                <div class="row solid">
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/so.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="LiveStream1 - ls1">
+                                <span class="description">
+                                    <span class="title">Livestream1 - So</span>
+                                    <span class="info"><strong>2014-01-22</strong> by <span class="user">jackie</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/great-cold-distance.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="LiveStream2 - ls2">
+                                <span class="description">
+                                    <span class="title">LiveStream2 </span>
+                                    <span class="info"><strong>2013-12-06</strong> by <span class="user">kwarc</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/dark-side-of-the-moon.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="Pink Floyd - Dark Side Of The Moon">
+                                <span class="description">
+                                    <span class="title">Pink Floyd - Dark Side Of The Moon</span>
+                                    <span class="info"><strong>2013-12-03</strong> by <span class="user">kate</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/achtung-baby.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="U2 - Achtung Baby">
+                                <span class="description">
+                                    <span class="title">U2 - Achtung Baby</span>
+                                    <span class="info"><strong>2013-11-22</strong> by <span class="user">johnny</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/deadwing.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="Porcupine Tree - Deadwing">
+                                <span class="description">
+                                    <span class="title">Porcupine Tree - Deadwing</span>
+                                    <span class="info"><strong>2013-02-06</strong> by <span class="user">kwarc</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/st-anger.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="Metallica - St. Anger">
+                                <span class="description">
+                                    <span class="title">Metallica - St. Anger</span>
+                                    <span class="info"><strong>2013-11-21</strong> by <span class="user">the_moor</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/hunter.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="Mastodon - The Hunter">
+                                <span class="description">
+                                    <span class="title">Mastodon - The Hunter</span>
+                                    <span class="info"><strong>2013-11-01</strong> by <span class="user">kwarc</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/ok-computer.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="Ok Computer">
+                                <span class="description">
+                                    <span class="title">Radiohead - Ok Computer</span>
+                                    <span class="info"><strong>2013-11-02</strong> by <span class="user">adam</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6 hidden-xs">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/fat-of-the-land.html">
+                                <img class="img-responsive full-width" src="img/jimmy/110dp.gif" alt="Prodigy - The Fat Of The Land">
+                                <span class="description">
+                                    <span class="title">Prodigy - The Fat Of The Land</span>
+                                    <span class="info"><strong>2013-10-27</strong> by <span class="user">super8</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--<div class="standard-box-more">
+                    <span class="line"></span>
+                    <a href="articles-list.html" data-toggle="tooltip" data-placement="left" title="Click for more...">more &raquo;</a>
+                </div>-->
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-12 col-md-2">
+
+            <div class="row">
+
+                <div class="col-sm-6 col-md-12 col-xs-12">
+					<img class="img-responsive full-width" src="img/jimmy/banner-300x750.gif" style="margin-top:30pt;">
+                    <!--<div class="standard-box">
+
+                        <h2 class="header-box">Log in</h2>
+
+                        <form class="form-horizontal" enctype="application/x-www-form-urlencoded" method="post" action="#">
+
+                            <div class="form-group has-feedback">
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="text" name="name" id="name" value="" placeholder="login"> 
+                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group has-feedback">
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="password" name="password" id="password" value="" placeholder="password"> <!--style="background-color:#31B404;"
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                </div>
+								
+                            </div>
+							<div class="checkbox" style="margin-bottom: 10pt; margin-top: -5pt;">
+								<label>
+									<input type="checkbox"> Remember me
+								</label>
+							</div>
+
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <input type="submit" name="submit" value="Log in" class="btn btn-warning" style="background-color:#31B404;">
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="register-link pull-right">
+                                        <a href="Wheylogin%20new.html" data-toggle="tooltip" data-placement="bottom" title="Registration">Register</a>
+                                    </div>
+                                </div>
+								 
+                            </div>
+							
+							
+							<center><a class="btn btn-md btn-facebook">
+								<i class="fa fa-facebook"></i> Sign in with Facebook
+							</a></center>
+
+                        </form>
+						
+
+                    </div> -->
+					
+
+                </div>
+					<br>
+			<br>
+			<br>
+			<br>
+
+                <div class="col-sm-6 col-md-12 col-xs-12">
+                    <!--<img class="img-responsive full-width" src="img/jimmy/banner-300x750.gif" style="margin-top:80pt;">-->
+					
+					
+					<!--<div class="standard-box">
+
+                        <h2 class="header-box">Search</h2>
+
+                        <form class="form-horizontal" enctype="application/x-www-form-urlencoded" method="post" action="#">
+
+                            <div class="form-group has-feedback">
+                                <div class="col-sm-12">
+                                    <input class="form-control" type="search" name="name" id="search" value="" placeholder="search...">
+                                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div> -->
+
+                </div>
+
+            </div>
+		
+			
+
+        </div>
+
+    </div>
+
+    <div class="row">
+<!--
+        <div class="col-md-10">
+
+            <div class="standard-box">
+
+                <h2 class="header-box"><a href="articles-list.html">News</a></h2>
+
+                <div class="row">
+
+                    <div class="col-sm-3 col-xs-6">
+                        <div class="standard-extend-item">
+                            <a class="image" href="#">
+                                <span class="date">06<br>feb</span>
+                                <span class="author">by <strong>kwarc</strong></span>
+                                <img class="img-responsive full-width" src="img/artists/radiohead-L.jpg" alt="Radiohead">
+                            </a>
+                            <h3>
+                                <a href="article-item.html">Radiohead with brand new album?</a>
+                            </h3>
+                            <p>New Radiohead album is 'up in the air', says bassist Colin Greenwood. We're looking forward to it. We love Radiohead and all their albums... <a href="article-item.html" title="more">&raquo;</a></p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-xs-6">
+                        <div class="standard-extend-item">
+                            <a class="image" href="article-item.html">
+                                <span class="date">09<br>jan</span>
+                                <span class="author">by <strong>adam</strong></span>
+                                <img class="img-responsive full-width" src="img/covers/songs-L.jpg" alt="SONGS">
+                            </a>
+                            <h3>
+                                <a href="article-item.html">Riverside - Shrine of New Generation Slaves - album details</a>
+                            </h3>
+                            <p>We know the release date of the brand new album of Riverside - Shrine of New Generation Slaves... <a href="article-item.html" title="more">&raquo;</a></p>
+                        </div>
+                    </div>
+
+                    <div class="clearfix visible-xs"></div>
+
+                    <div class="col-sm-3 col-xs-6">
+                        <div class="standard-extend-item">
+                            <a class="image" href="article-item.html">
+                                <span class="date">15<br>dec</span>
+                                <span class="author">by <strong>super8</strong></span>
+                                <img class="img-responsive full-width" src="img/posters/the-wall-L.jpg" alt="The Wall">
+                            </a>
+                            <h3>
+                                <a href="article-item.html">Roger Waters with The Wall live</a>
+                            </h3>
+                            <p>The Wall Live by Roger Waters is a worldwide concert tour, member of Pink Floyd band... <a href="article-item.html" title="more">&raquo;</a></p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-xs-6">
+                        <div class="standard-extend-item">
+                            <a class="image" href="article-item.html">
+                                <span class="date">09<br>jan</span>
+                                <span class="author">by <strong>kwarc</strong></span>
+                                <img class="img-responsive full-width" src="img/covers/falling-deeper-L.jpg" alt="Anathema - Falling Deeper">
+                            </a>
+                            <h3>
+                                <a href="article-item.html">New album of Anathema in September </a>
+                            </h3>
+                            <p>At 5 September there is a release date of new Anathema album - Falling Deeper. The band present the orchestral... <a href="article-item.html" title="more">&raquo;</a></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="standard-box-more margin-top-min-5">
+                    <span class="line"></span>
+                    <a href="articles-list.html" data-toggle="tooltip" data-placement="left" title="Click for more...">more &raquo;</a>
+                </div> 
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <div class="standard-box">
+
+                <h2 class="header-box"><a href="articles-list.html">Articles</a></h2>
+
+                <div class="standard-text-list">
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Radiohead Concert at Poznan</a>
+                        </h3>
+                        <div class="description"><strong>2013-01-17</strong> by <a href="#">monika</a></div>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">In The Court Of The Crimson King</a>
+                        </h3>
+                        <div class="description"><strong>2013-01-11</strong> by <a href="#">kwarc</a></div>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">About cover art of Heritage by Opeth</a>
+                        </h3>
+                        <div class="description"><strong>2013-01-09</strong> by <a href="#">super8</a></div>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Iron Maiden at concert</a>
+                        </h3>
+                        <div class="description"><strong>2013-01-02</strong> by <a href="#">the_moor</a></div>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Old musical box - about Nursery Cryme</a>
+                        </h3>
+                        <div class="description"><strong>2012-12-15</strong> by <a href="#">kwarc</a></div>
+                    </div>
+
+                </div>
+
+                <div class="standard-box-more">
+                    <span class="line"></span>
+                    <a href="articles-list.html" data-toggle="tooltip" data-placement="top" title="Click for more...">more &raquo;</a>
+                </div>
+
+            </div>
+
+        </div> -->
+
+    </div>
+
+</br>
+    <div class="row">
+		<center><img class="img-responsive full-height" src="img/jimmy/home-banner.gif" alt="Inserted Banner"></center>
+	</div>
+	<!--</br>
+	</br>
+
+    <div class="row">
+
+        <div class="col-sm-6 col-md-5">
+
+            <div class="standard-box margin-bottom-5">
+
+                <h2 class="header-box">Rising Stars</h2>
+
+                <div class="row solid">
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/controlling-crowds.html">
+                                <img class="img-responsive full-width" src="img/covers/controlling-crowds-L.jpg" alt="Archive - Controlling Crowds">
+                                <span class="description">
+                                    <span class="title">Archive - Controlling Crowds</span>
+                                    <span class="info"><strong>2013-02-06</strong> by <span class="user">tadek</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/change-of-seasons.html">
+                                <img class="img-responsive full-width" src="img/covers/change-of-seasons-L.jpg" alt="Dream Theater - A Change Of Seasons">
+                                <span class="description">
+                                    <span class="title">Dream Theater - A Change Of Seasons</span>
+                                    <span class="info"><strong>2013-02-06</strong> by <span class="user">tadek</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/great-cold-distance.html">
+                                <img class="img-responsive full-width" src="img/covers/great-cold-distance-L.jpg" alt="Katatonia - The Great Cold Distance">
+                                <span class="description">
+                                    <span class="title">Katatonia - The Great Cold Distance </span>
+                                    <span class="info"><strong>2013-02-06</strong> by <span class="user">tadek</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/powerslave.html">
+                                <img class="img-responsive full-width" src="img/covers/powerslave-L.jpg" alt="Iron Maiden - Powerslave">
+                                <span class="description">
+                                    <span class="title">Iron Maiden - Powerslave</span>
+                                    <span class="info"><strong>2013-02-06</strong> by <span class="user">monika</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/achtung-baby.html">
+                                <img class="img-responsive full-width" src="img/covers/achtung-baby-L.jpg" alt="U2 - Achtung Baby">
+                                <span class="description">
+                                    <span class="title">U2 - Achtung Baby</span>
+                                    <span class="info"><strong>2013-01-11</strong> by <span class="user">monika</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-4 col-xs-6">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/st-anger.html">
+                                <img class="img-responsive full-width" src="img/covers/st-anger-L.jpg" alt="Metallica - St. Anger">
+                                <span class="description">
+                                    <span class="title">Metallica - St. Anger</span>
+                                    <span class="info"><strong>2013-11-21</strong> by <span class="user">the_moor</span></span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-6 col-md-5">
+
+            <div class="standard-box">
+
+                <h2 class="header-box"><a href="articles-list.html">Games Available</a></h2>
+
+                <div class="row solid">
+
+                    <div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/controlling-crowds.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Dota 2">
+                                
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/change-of-seasons.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Dream Theater - A Change Of Seasons">
+                                
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/great-cold-distance.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Katatonia - The Great Cold Distance">
+                                
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/powerslave.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Iron Maiden - Powerslave">
+                                
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/achtung-baby.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="U2 - Achtung Baby">
+                                
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/st-anger.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Metallica - St. Anger">
+                                
+                            </a>
+                        </div>
+                    </div>
+					<div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/controlling-crowds.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Archive - Controlling Crowds">
+                                
+                            </a>
+                        </div>
+                    </div>
+					<div class="col col-sm-2 col-xs-4">
+                        <div class="item-img-square">
+                            <a href="tmp-pages/controlling-crowds.html">
+                                <img class="img-responsive full-width" src="img/jimmy/50dp.gif" alt="Archive - Controlling Crowds">
+                                
+                            </a>
+                        </div>
+                    </div>
+					
+
+
+
+                </div>
+
+                <div class="standard-box-more">
+                    <span class="line"></span>
+                    <a href="articles-list.html" data-toggle="tooltip" data-placement="left" title="Click for more...">more &raquo;</a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-12 col-md-2">
+
+            <div class="standard-box">
+
+                <!--<h2 class="header-box">Last albums</h2>
+					<img class="img-responsive full-width" src="img/jimmy/banner_300x250.gif" style="margin-bottom:10pt;">
+					<img class="img-responsive full-width" src="img/jimmy/banner_300x250.gif">
+					
+            </div>
+
+        </div>
+
+    </div>-->
+
+    <!--<div class="row">
+
+        <div class="col-sm-6 col-md-5">
+
+            <div class="standard-box margin-bottom-5">
+
+                <h2 class="header-box">Previews</h2>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-xs-6">
+                        <div class="standard-extend-item">
+                            <a class="image" href="tmp-pages/so.html">
+                                <span class="date">12<br> dec</span>
+                                <img class="img-responsive full-width" src="img/covers/so-L.jpg" alt="Peter Gabriel - So">
+                                <span class="rating">
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star negative">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                </span>
+                            </a>
+                            <h3>
+                                <a href="tmp-pages/so.html">Peter Gabriel - So</a>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xs-6">
+                        <div class="standard-extend-item">
+                            <a class="image" href="tmp-pages/raven.html">
+                                <span class="date">01<br> jan</span>
+                                <img class="img-responsive full-width" src="img/covers/raven-L.jpg" alt="Steven Wilson - Raven That Refused To Sing">
+                                <span class="rating">
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                    <span class="star positive">
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    </span>
+                                </span>
+                            </a>
+                            <h3>
+                                <a href="tmp-pages/raven.html">Steven Wilson - Raven That Refused To Sing</a>
+                            </h3>
+                        </div>
+                    </div> 
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-5">
+
+            <div class="standard-box">
+
+                <h2 class="header-box">Tags</h2>
+
+                <ul class="tags-list">
+
+                    <li><a class="tag-level-1" href="#">Rock</a></li>
+                    <li><a class="tag-level-4" href="#">Heavy metal</a></li>
+                    <li><a class="tag-level-1" href="#">Jazz</a></li>
+                    <li><a class="tag-level-3" href="#">Progressive</a></li>
+                    <li><a class="tag-level-1" href="#">Grunge</a></li>
+                    <li><a class="tag-level-6" href="#">Electronic</a></li>
+                    <li><a class="tag-level-2" href="#">Alternative</a></li>
+                    <li><a class="tag-level-7" href="#">Trip hop</a></li>
+                    <li><a class="tag-level-4" href="#">Post rock</a></li>
+                    <li><a class="tag-level-6" href="#">Avantgarde</a></li>
+                    <li><a class="tag-level-7" href="#">Space rock</a></li>
+                    <li><a class="tag-level-4" href="#">Fusion</a></li>
+                    <li><a class="tag-level-5" href="#">Funk</a></li>
+                    <li><a class="tag-level-5" href="#">Power metal</a></li>
+                    <li><a class="tag-level-3" href="#">Rave</a></li>
+                    <li><a class="tag-level-8" href="#">Doom metal</a></li>
+                    <li><a class="tag-level-5" href="#">Brit pop</a></li>
+                    <li><a class="tag-level-7" href="#">Math metal</a></li>
+                    <li><a class="tag-level-5" href="#">Hardcore</a></li>
+                    <li><a class="tag-level-6" href="#">Punk</a></li>
+                    <li><a class="tag-level-4" href="#">Blues</a></li>
+                    <li><a class="tag-level-7" href="#">Symphony metal</a></li>
+                    <li><a class="tag-level-6" href="#">Noise</a></li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-12 col-md-2">
+
+             <div class="standard-box">
+
+                <h2 class="header-box"><a href="articles-list.html">Concerts</a></h2>
+
+                <div class="standard-text-list">
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Mark Knopfler</a>
+                        </h3>
+                        <p>2013-05-08 - Lodz, Atlas Arena 19:30 165-616 PLN</p>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Roger Waters The Wall</a>
+                        </h3>
+                        <p>2013-08-20, Warszawa, tickets: 242 zł - 1310 zł</p>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Sonisphere Festival</a>
+                        </h3>
+                        <p>2013-10-12 - Wroclaw 19:30, tickets: 165-1616 PLN</p>
+                    </div>
+
+                    <div class="item">
+                        <h3>
+                            <a href="article-item.html">Iron Maiden</a>
+                        </h3>
+                        <p>2013-08-20, Warszawa, tickets: 242 zł - 1310 zł</p>
+                    </div>
+
+                </div>
+
+                <div class="standard-box-more">
+                    <span class="line"></span>
+                    <a href="articles-list.html" data-toggle="tooltip" data-placement="top" title="Click for more...">more &raquo;</a>
+                </div>
+
+            </div>
+
+        </div> 
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-12 col-md-10">
+
+            <div class="standard-box margin-bottom-5">
+
+                <h2 class="header-box">Our Team</h2>
+
+                <div class="row">
+
+                    <div class="col col-sm-3">
+
+                        <div class="team-item">
+                            <img src="img/persons/person-5.png" alt="person">
+                            <div class="description">
+                                <h3>John Wilson*</h3>
+                                <p><i class="fa fa-briefcase"></i> Chief</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col col-sm-3">
+
+                        <div class="team-item">
+                            <img src="img/persons/person-6.png" alt="person">
+                            <div class="description">
+                                <h3>Kate Houston*</h3>
+                                <p><i class="fa fa-briefcase"></i> Editor</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col col-sm-3">
+
+                        <div class="team-item">
+                            <img src="img/persons/person-7.png" alt="person">
+                            <div class="description">
+                                <h3>Tom Buckley*</h3>
+                                <p><i class="fa fa-briefcase"></i> Editor</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col col-sm-3">
+
+                        <div class="team-item">
+                            <img src="img/persons/person-9.png" alt="person">
+                            <div class="description">
+                                <h3>Eddie Norton*</h3>
+                                <p><i class="fa fa-briefcase"></i> Support</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-12 col-md-2">
+
+            <div class="standard-box">
+
+                <h2 class="header-box"><a href="faq.html">FAQ</a></h2>
+
+                <ul class="list with-links list-headers">
+
+                    <li>
+                        <h3>
+                            <a href="faq.html">What is music-nation?</a>
+                        </h3>
+                    </li>
+
+                    <li>
+                        <h3>
+                            <a href="faq.html">Lorem ipsum dolor sit amet, consectetur adipiscing elit?</a>
+                        </h3>
+                    </li>
+
+                    <li>
+                        <h3>
+                            <a href="faq.html">Nullam id elit mi. Fusce porta mauris a orci tristique convallis?</a>
+                        </h3>
+                    </li>
+
+                    <li>
+                        <h3>
+                            <a href="faq.html">Fusce eget tincidunt enim?</a>
+                        </h3>
+                    </li>
+
+                    <li>
+                        <h3>
+                            <a href="faq.html"> In eget pretium nibh, sed scelerisque massa?</a>
+                        </h3>
+                    </li>
+
+                </ul>
+
+                <div class="standard-box-more">
+                    <span class="line"></span>
+                    <a href="faq.html" data-toggle="tooltip" data-placement="top" title="Click for more...">more &raquo;</a>
+                </div>
+
+            </div>
+
+        </div> 
+
+    </div>-->
+
+</div>
+
+
+<footer>
+
+    <div class="container">
+
+        <ul>
+			<li>
+                <a href="index.html">
+                    <span>Home</span>
+                </a>
+            </li>
+			<li>
+                <a href="about-us.html">
+                    <span>About us</span> <!--not yet-->
+                </a>
+            </li>
+			<li>
+                <a href="partner-us.html">
+                    <span>Partner US</span> <!--not yet-->
+                </a>
+            </li>
+			<li>
+                <a href="faq.html">
+                    <span>FAQ</span>  <!--not yet-->
+                </a>
+            </li>
+			<li>
+                <a href="privacy-policy.html">
+                    <span>Privacy Policy</span> <!--not yet-->
+                </a>
+            </li>
+            <li>
+                <a href="contact-us.html">
+                    <span>Contact US</span> <!--not yet-->
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#help-modal"> <!--not yet-->
+                    <span>Help</span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</footer>
+
+<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title">Help</h3>
+            </div>
+
+            <div class="modal-body">
+
+                <h3>Lorem ipsum</h3>
+
+                <blockquote>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sagittis leo ut sapien tristique adipiscing. Nunc vitae nisi id ipsum congue ullamcorper.
+                </blockquote>
+
+                <p>Fusce a rhoncus tortor. Quisque quis turpis sit amet arcu elementum posuere ac a nisi. Donec congue, sem ac lacinia placerat, orci dolor interdum felis, ac faucibus enim ipsum sit amet justo. Integer ut metus egestas, aliquam sapien et, adipiscing orci. Ut tempus risus et mi consequat, eget rhoncus lectus tempus. Aliquam posuere enim nec interdum vehicula.</p>
+
+                <p>Etiam feugiat lobortis consequat. Nullam non augue a mauris auctor mattis vel non lectus. Nullam gravida odio at dui tincidunt, sit amet imperdiet est mollis.</p>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Music-nation - Registration</title>
+
+    <!-- bootstrap styles -->
+    <link href="css/styles.css" media="screen" rel="stylesheet" type="text/css" >
+
+    <!-- additional fonts -->
+    <link href="css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" >
+
+    <!-- Modernizr -->
+    <script type="text/javascript" src="js/modernizr.custom.min.js"></script>
+
+    <script type="text/javascript">
+
+        //checking media queries browsers support
+        Modernizr.load({
+            test: Modernizr.mq('only all'),
+            nope: 'js/respond.min.js'
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+<body style="background-color:#ffffff;font-family:arial;"> <!-- Black is #ff000000, white is #ffffff-->
+
+<div class="navbar navbar-inverse navbar-fixed-top"  >
+    <div class="container">
+		
+		<div class="row">
+			
+			<div class="col-sm-3">
+				<a href="#" class="pull-left"><img src="img/jimmy/WHEYTV logo white.png" style="max-width:170pt;"></a>
+			</div>
+			<div class="col-sm-9">
+	 
+				<p style="height:20pt;">&nbsp;</p>
+					<div class="collapse navbar-collapse" id="main-menu">
+			
+						<ul class="nav navbar-nav">
+						<li class="pull-left">
+							<a href="Wheyhome.html">Home</a>
+						</li>
+						<li class="pull-center">
+							<a href="WheyPartnerUS.html">Partner US</a>
+						</li>
+						<li class="pull-right">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Hi Jimmy <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="WHEYTV%20Profile.html">Profile Settings</a>
+								</li>
+								<li>
+									<a href="Profile%20Stream%20Now.html">Stream Setup</a>
+								</li>
+								<li>
+									<a href="Cash%20Shop.html">Top Up Wings</a>
+								</li>
+								<li>
+									<a href="blog-item.html">Log out</a>
+								</li>
+							</ul>
+						</li>
+						</ul>
+
+					</div>	
+	  
+			</div>
+		</div>
+      
+    </div>
+
+</div>
+
+
+
+<div class="container">
+	
+    <div class="row">
+
+        <div class="col-md-12"style="margin-top: 10pt">
+			
+			</br>
+            <h1 class="header-box">Stream Page</h1>
+			<p> Personalise your channel by adding customised images to your stream page</p>
+			</br>
+			
+			<form class="form-horizontal" role="form">
+								<div class="form-group has-feedback">
+									
+									<label for="firstname" class="col-sm-3 control-label">Personal description</label>
+									<div class="col-sm-5">
+										<div class= "Personal Description">
+											<textarea class="text optional" cols="40" id="Personal description" name="user[personal description]" rows="10"></textarea>
+											<p class= "form_microcopy">
+											"Share more about yourself with your fellow viewers! Tell them your stream schedule and what games you play! Also set some rules for your stream to tell them your preferred style of content"
+											</p>
+										
+										</div>
+									</div>
+									
+								</div>
+			</form>
+
+							
+			<form class="form-horizontal" role="form">
+				<div class="form-group has-feedback">
+                    <label for="Title your broadcast" class="col-sm-3 control-label">Pic 1</label>
+					
+					<div class="Upload">
+                    
+						<div class="col-sm-6">
+						
+							<div class="input file optional user_profile_image">
+								<input class="file optional" id= "user_profile_image" name="user[profile_image]" type="file">
+								<p class = "form_microcopy"> Please upload the image according to 720px by 80px. Max 5mb gif, jpg or png.</p> 						
+					
+					
+							</div>
+							
+						</div>
+					
+					</div>
+					
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="Title your broadcast" class="col-sm-3 control-label">Pic 2</label>
+					
+					<div class="Upload">
+                    
+						<div class="col-sm-6">
+						
+							<div class="input file optional user_profile_image">
+								<input class="file optional" id= "user_profile_image" name="user[profile_image]" type="file">
+								<p class = "form_microcopy"> Please upload the image according to 720px by 80px. Max 5mb gif, jpg or png.</p> 						
+					
+					
+							</div>
+							
+						</div>
+					
+					</div>
+					
+                </div>
+				
+				
+                <div class="form-group has-feedback">
+                    <label for="broadcast language" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6" "dash-broadcaster-language-selector">
+						<!--<h4 class="section_header"> Broadcast Language </h4>-->
+							
+							<button type="confirm" class="btn btn-md btn-success">Confirm</button>
+													
+                    </div>
+					
+                </div>   
+                
+            </form>
+			
+			
+			<div class="row" >
+	
+					<h1 class="header-box">Stream Key</h1>
+
+					<form class="form-horizontal" role="form">
+						<div class="form-group has-feedback">
+							<div class="col-sm-3">
+							</div>
+							<div class="col-sm-5">
+								<p class="form_microcopy">
+									"Do not share your Stream Key with anybody to ensure integrity of your live streams and channel. If you suspect anyone is streaming your channel without your permission, please contact WHEYTV via our contact page instantly."
+									
+								</p>
+								<button class="js-stream-key-open primary button" href="/xxcyrius/dashboard/streamkey_modal">
+								
+								<!-- The button to reveal the stream key-->
+									<!--<button class="js-stream-key-open primary button" data-href="/xxcyriusxx/dashboard/streamkey_modal">--> 	
+									<span> Show Key </span>
+								</button>
+								
+							</div>
+							
+						</div>
+					</form>
+			</div>
+			<div class="row" >
+	
+					<h1 class="header-box">Channel Settings</h1>
+
+					<form class="form-horizontal" role="form">
+						<div class="form-group has-feedback">
+							
+							<label for="firstname" class="col-sm-3 control-label">Mature Content</label>
+							<div class="col-sm-5">
+								<div class= "input boolean optional user_mature">
+									<input name="user[mature]" type="hidden" value= "0">
+									<input class="boolean optional"  id="user_mature" name="user[mature]" type="checkbox" value ="1">
+									<label class="boolean optional" for="user_mature">Inappropriate for younger audiences</label>
+									
+									<p class="form_microcopy">
+									"You may never broadcast sexual activity, nudity, threats or extreme violence. Doing so will result in immediate, irrevocable termination of your account. Please make sure your content will comply with the Terms of Service before broadcasting."
+									
+									</p>
+								
+								
+								</div>
+							</div>
+							
+						</div>
+					</form>
+			</div>
+			<div class="row" >
+			
+							<h1 class="header-box">Chat Options</h1>
+
+							<form class="form-horizontal" role="form">
+								<div class="form-group has-feedback">
+									
+									<label for="firstname" class="col-sm-3 control-label">Banned Words</label>
+									<div class="col-sm-5">
+										<div class= "input text optional user_banned_chat_words clear">
+											<textarea class="text optional" cols="40" id="user_banned_chat_words" name="user[banned_chat_words]" rows="10"></textarea>
+											<p class= "form_microcopy">
+											"Filter words from your chat by listing them above. This can help keep your chat cleaner and prevent harassment. Place each word on a new line. If you have a wildcard "*" at the start or end of a word, it will match any characters there. Filtered words are replaced with ***"
+											</p>
+										
+										</div>
+									</div>
+									
+								</div>
+							</form>
+			</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			<h1 class="header-box">Start Streaming Now</h1>
+			<p>Update your stream status and stream key </p>
+
+            <form class="form-horizontal" role="form">
+				<div class="form-group has-feedback">
+                    <label for="Title your broadcast" class="col-sm-3 control-label">Title your broadcast</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="my broadcast" placeholder="My broadcast">
+                        
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="Game Playing" class="col-sm-3 control-label">Game Playing</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="game playing" placeholder="Dota 2, LOL, Hearthstone">
+                        
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="HashTags" class="col-sm-3 control-label">HashTags</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="game playing" placeholder="#tagalog, #english, #comedian">
+                        
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label for="broadcast language" class="col-sm-3 control-label">Broadcast Language</label>
+                    <div class="col-sm-6" "dash-broadcaster-language-selector">
+						<!--<h4 class="section_header"> Broadcast Language </h4>-->
+							<div id="custom_language">
+								<div class="vod_broadcaster_language_full_name">
+									<input class="string required dropdown" id="broadcaster_language_switch" placeholder="Choose a language" required="required" value="English">
+                        
+								</div>
+							</div>
+							</br>
+							
+							
+							<a href="WHEY%20Active%20Stream.html" class="btn btn-md btn-success" role="button">Go Live Now</a>
+						
+                    </div>
+					
+                </div>   
+                
+            </form>
+
+        </div>
+
+        
+
+
+
+    </div>
+	<div class="row">
+
+        <div class="col-md-12"style="margin-top: 10pt">
+
+            <h1 class="header-box">Instant Poll</h1>
+
+            <form class="form-horizontal" role="form">
+				<div class="form-group has-feedback">
+                    <label for="Title your broadcast" class="col-sm-3 control-label">Poll Title</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="my broadcast" placeholder="Which weapon do you want to see next?">
+                        
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="Game Playing" class="col-sm-3 control-label">Option 1</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="game playing" placeholder="Sniper class">
+                        
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="Instant Poll" class="col-sm-3 control-label">Option 2</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="game playing" placeholder="SMG Machine Gun">
+                        
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="Instant Poll" class="col-sm-3 control-label">Option 3</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="game playing" placeholder="Shot Gun">
+                        
+                    </div>
+                </div>
+				<div class="form-group has-feedback">
+                    <label for="Instant Poll" class="col-sm-3 control-label">Option 4</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="game playing" placeholder="Rifle">
+                        
+                    </div>
+                </div>
+				
+                <div class="form-group has-feedback">
+                    <label for="broadcast language" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6" "dash-broadcaster-language-selector">
+						<!--<h4 class="section_header"> Broadcast Language </h4>-->
+							
+							
+							<button class="js-stream-key-open primary button" href="C:/Users/Jimmy/Desktop/music-nation-bootstrap/blog-item%20-%20Copy%20(2).html">
+									<span> Poll Now </span>
+									<!-- Button will become End Poll after user clicks Poll Now-->
+							</button>
+							
+							
+							
+							<!--<div class="checkbox">
+								  <label>
+									<input type="checkbox" data-toggle="toggle">
+									Option one is enabled
+								  </label>
+							</div>
+								<div class="checkbox disabled">
+								  <label>
+									<input type="checkbox" disabled data-toggle="toggle">
+									Option two is disabled
+								  </label>
+							</div>-->
+
+							
+                    </div>
+					
+                </div>   
+                
+            </form>
+
+        </div>
+
+        
+
+
+
+    </div>
+	
+	
+	<div class="row">
+
+       <!--<div class="col-md-12"style="margin-top: 10pt">
+
+            <h1 class="header-box">Promoted Streamer</h1>
+
+            <form class="form-horizontal" role="form">
+				<div class="form-group has-feedback">
+                    <label for="Title your broadcast" class="col-sm-3 control-label">Streamer Page</label>
+                    <div class="col-sm-6">
+						<p class="form_microcopy">
+						"Feature any streamer to help them grow their channel! Cross-promote between other streamers to maximise your audience exposure."			
+						</p>
+                        <input type="text" class="form-control" id="my broadcast" placeholder="Link Streamer URL">
+                        
+                    </div>
+                </div>
+				
+                <div class="form-group has-feedback">
+                    <label for="Disable function" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6" "dash-broadcaster-language-selector">
+						<!--<h4 class="section_header"> Broadcast Language </h4>-->
+							
+							<!--<div class="checkbox">
+								<label>
+									<input type="checkbox"> Disable Function
+									<!--<input type="checkbox"> I agree with <a href="#">terms conditions</a>
+                        
+								</label>
+							</div>							
+                    </div>
+					
+                </div>   			
+                
+            </form>
+
+        </div>-->
+
+    </div>
+	<div class="row">
+
+        <div class="col-md-12"style="margin-top: 10pt">
+
+            <h1 class="header-box">Paypal Account</h1>
+			<p class="form_microcopy">
+				Please enter your paypal donation link so that fans can have the option to donate to you			
+			</p>
+			</br>
+			
+			<form class="form-horizontal" role="form">
+				
+				<div class="form-group has-feedback">
+                    <label for="Instant Poll" class="col-sm-3 control-label">PayPal Email Address</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="Author Email" placeholder="Paypal Email">
+                        
+                    </div>
+					
+				</div>
+				
+				<div class="form-group has-feedback">
+                    <label for="Instant Poll" class="col-sm-3 control-label">PayPal Donation Link</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="Author Donate Link" placeholder="Paypal Donation URL">
+                        
+                    </div>
+				</div>  
+				
+                
+            </form>
+
+        </div>
+
+    </div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="row">
+
+        <div class="col-md-12"style="margin-top: 10pt">
+
+            <h1 class="header-box">Withdrawal</h1>
+
+            <form class="form-horizontal" role="form">
+				<div class="form-group has-feedback">
+                    <label for="Paypal Login" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6">
+						<p class="form_microcopy">
+							Withdrawal Amount : $30.50 SGD			
+						</p>
+						<p class="form_microcopy">
+							There is a minimum withdrawal limit of $50.00 SGD. Should your withdrawal amount be less than $50.00 SGD no amount can be withdrawn.			
+						</p>
+                        
+                        
+                    </div>
+                </div>
+				
+                <div class="form-group has-feedback">
+                    <label for="Withdrawal Amount" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6" "Paypal Account">
+						<!--<h4 class="section_header"> Broadcast Language </h4>-->
+							
+							<div class="checkbox">
+								<label>
+									<input type="checkbox"> Use registered Paypal Account 
+									<!--<input type="checkbox"> I agree with <a href="#">terms conditions</a>-->
+                        
+								</label>
+							</div>
+							</br>
+							<button type="Withdraw Now" class="btn btn-md btn-success">Withdraw Now</button>
+						
+                    </div>
+					
+                </div>   
+				
+                
+            </form>
+
+        </div>
+
+    </div>
+	
+	
+	
+					
+
+</div>
+
+<footer>
+
+    <div class="container">
+
+        <ul>
+			<li>
+                <a href="home.html">
+                    <span>Home</span>
+                </a>
+            </li>
+			<li>
+                <a href="about-us.html">
+                    <span>About us</span>
+                </a>
+            </li>
+			<li>
+                <a href="home.html">
+                    <span>Partner US</span>
+                </a>
+            </li>
+			<li>
+                <a href="home.html">
+                    <span>FAQ</span>
+                </a>
+            </li>
+			<li>
+                <a href="home.html">
+                    <span>Privacy Policy</span>
+                </a>
+            </li>
+            <li>
+                <a href="home.html">
+                    <span>Contact US</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#help-modal">
+                    <span>Help</span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</footer>
+
+<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title">Help</h3>
+            </div>
+
+            <div class="modal-body">
+
+                <h3>Lorem ipsum</h3>
+
+                <blockquote>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sagittis leo ut sapien tristique adipiscing. Nunc vitae nisi id ipsum congue ullamcorper.
+                </blockquote>
+
+                <p>Fusce a rhoncus tortor. Quisque quis turpis sit amet arcu elementum posuere ac a nisi. Donec congue, sem ac lacinia placerat, orci dolor interdum felis, ac faucibus enim ipsum sit amet justo. Integer ut metus egestas, aliquam sapien et, adipiscing orci. Ut tempus risus et mi consequat, eget rhoncus lectus tempus. Aliquam posuere enim nec interdum vehicula.</p>
+
+                <p>Etiam feugiat lobortis consequat. Nullam non augue a mauris auctor mattis vel non lectus. Nullam gravida odio at dui tincidunt, sit amet imperdiet est mollis.</p>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script type="text/javascript" src="js/jquery.1.11.0.min.js"></script>
+
+<!-- bootstrap js -->
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+<!-- scrollTo js -->
+<script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
+
+<!-- custom js -->
+<script type="text/javascript" src="js/custom.js"></script>
+
+</body>
+</html>

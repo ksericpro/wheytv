@@ -1,0 +1,35 @@
+   .row [class*="-6"] {
+   /* the following is just used to show grid*/
+	background-color:#fff;
+}
+
+.head-logo {
+    display: block;
+    padding-top: 8px;
+    height: 35px;
+    width: 88px;
+    margin-left: 12px;
+}
+
+.product-image-wrapper{
+	border:1px solid #F7F7F5;
+	overflow: hidden;
+	margin-bottom:10px;
+}
+
+.single-products {
+  position: relative;
+}
+
+.menu_links { cursor: pointer; }
+
+.no-gutter [class*="-6"] {
+	padding-left:0;
+    padding-right:0;
+}
+
+.imageClip{
+    width:150px;
+    height:80px;
+    overflow:hidden;
+}

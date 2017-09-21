@@ -1,0 +1,18 @@
+.loginbadge
+{
+	font-size:10pt;
+	float: right;
+	display: inline-block;
+	margin-top: 30pt;
+	min-width:200pt;
+}
+
+.minimenu_button
+{
+	background-color:#000000;
+}
+
+.div_after_header
+{
+	margin-top:90pt
+}
